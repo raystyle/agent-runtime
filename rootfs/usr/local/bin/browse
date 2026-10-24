@@ -1,0 +1,3 @@
+#!/bin/sh
+export BROWSE_CHROME=/opt/clean-chrome/CURRENT/chrome
+exec /opt/browse/0.37.2/browse "$@"

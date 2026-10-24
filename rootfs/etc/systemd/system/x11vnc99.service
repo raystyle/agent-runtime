@@ -1,0 +1,12 @@
+[Unit]
+Description=agent desktop VNC (x11vnc :99 -> 5900, loopback only)
+Requires=xvfb99.service
+After=xvfb99.service
+[Service]
+Environment=XAUTHORITY=/var/lib/desktop/x99.auth
+ExecStartPre=/usr/local/bin/desktop-auth-gen
+ExecStart=/usr/bin/x11vnc -display :99 -auth /var/lib/desktop/x99.auth -rfbport 5900 -localhost -forever -shared -rfbauth /var/lib/desktop/vnc.passwd -nosel -noprimary -noncache -cursor arrow -wait 10 -defer 10 -speeds lan -xrandr -o /var/log/x11vnc99.log
+Restart=on-failure
+RestartSec=1
+[Install]
+WantedBy=multi-user.target

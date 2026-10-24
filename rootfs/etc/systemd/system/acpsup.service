@@ -1,0 +1,13 @@
+[Unit]
+Description=ACP supervisor (acpsup)
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/acpsup
+Environment=ACPSUP_SESSION_MAX=16
+Environment=ACPSUP_KEY_SESSIONS=12
+Environment=ACPSUP_BUILD=1792074113
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

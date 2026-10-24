@@ -1,0 +1,10 @@
+[Unit]
+Description=agent desktop X server (Xvfb :99 2560x1440)
+After=local-fs.target
+[Service]
+ExecStartPre=/usr/local/bin/desktop-auth-gen
+ExecStart=/usr/bin/Xvfb :99 -screen 0 2560x1440x24 -dpi 96 -nolisten tcp -auth /var/lib/desktop/x99.auth +extension DAMAGE +extension RANDR
+Restart=on-failure
+RestartSec=1
+[Install]
+WantedBy=multi-user.target

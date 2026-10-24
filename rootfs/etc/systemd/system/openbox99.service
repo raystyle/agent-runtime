@@ -1,0 +1,13 @@
+[Unit]
+Description=agent minimal WM session (openbox on :99)
+Requires=xvfb99.service
+After=xvfb99.service
+[Service]
+Environment=DISPLAY=:99
+Environment=XAUTHORITY=/var/lib/desktop/x99.auth
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 50); do [ -S /tmp/.X11-unix/X99 ] && exit 0; sleep 0.1; done; exit 1'
+ExecStart=/usr/bin/openbox
+Restart=on-failure
+RestartSec=2
+[Install]
+WantedBy=multi-user.target

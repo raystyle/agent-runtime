@@ -1,0 +1,20 @@
+#!/bin/sh
+# agent 桌面凭证一生一次:X 授权(hostname/unix:N + :N 双键)+ VNC 口令
+# (明文 0600 供 acpsup /vnc/desktop 出;哈希件 Xvnc -rfbauth 直读,与 x11vnc 同格式)。
+# 均不烤镜像。
+set -e
+DIR=/var/lib/desktop
+AUTH="$DIR/x99.auth"; PW="$DIR/vnc.passwd"; PWP="$DIR/vnc.passwd.plain"
+install -d -m 700 "$DIR"
+if [ ! -s "$AUTH" ]; then
+    cookie="$(dd if=/dev/urandom bs=16 count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')"
+    xauth -f "$AUTH" add "$(hostname)/unix:99" . "$cookie"
+    xauth -f "$AUTH" add ":99" . "$cookie"
+    chmod 600 "$AUTH"
+fi
+if [ ! -s "$PWP" ] || [ ! -s "$PW" ]; then
+    pw="$(dd if=/dev/urandom bs=4 count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')"
+    printf '%s' "$pw" > "$PWP"
+    x11vnc -storepasswd "$pw" "$PW"
+    chmod 600 "$PWP" "$PW"
+fi
