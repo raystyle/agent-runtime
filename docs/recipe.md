@@ -36,7 +36,7 @@
 - `GET /vnc?display=desktop`(WS 升级,子协议 `binary`)→ 101;响应体含 `{display, rfb_port, password}`。
 - 键/token/keys.json 首启自生,一生一次。
 
-## 5. 与编排器的接口:haoxuann 父仓
+## 5. 与编排器的接口:haoxuan 父仓
 
 - 消费面:`gateway-zacp/backend/internal/orchestrator/incus.go` `imageFor()`--别名直透,config `[orchestrator] image/app_image/agent_images` 可覆盖,默认常数 `haoxuan-v3` / `haoxuan-v3-app`。**换镜像=改别名,零代码。**
 - launch 形态:project `haoxuan`、limits 3GiB/3cpu、acp proxy device(宿主 127.0.0.1:17xxx→容器 7663)。

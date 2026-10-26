@@ -1,9 +1,9 @@
 # agent-runtime -- haoxuan 系统容器底坯镜像配方仓
 
-本仓是 haoxuann 舰队「系统容器基础配置部署环境」的单一权威源:底坯镜像
+本仓是 haoxuan 舰队「系统容器基础配置部署环境」的单一权威源:底坯镜像
 `haoxuan-v3`(别名 hx-agent-base / hx-agent-base-v1-bookworm,现役指纹
 16b35bf1669c)的构建配方、发布闸与再出版 SOP。以 git submodule 形态嵌套
-维护于 haoxuann 父仓(raystyle/haoxuan)顶层 `agent-runtime/`;**Go ACP 网关
+维护于 haoxuan 父仓(raystyle/haoxuan)顶层 `agent-runtime/`;**Go ACP 网关
 在父仓 gateway-zacp/,不属本仓**。
 
 ## 快速开始

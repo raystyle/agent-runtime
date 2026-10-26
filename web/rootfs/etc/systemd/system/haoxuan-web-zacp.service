@@ -1,6 +1,6 @@
 # zacp 网关 8681(ZACP_DATA=状态卷;incus CLI 经 bind-mount socket)
 [Unit]
-Description=haoxuann web zacp gateway (8681)
+Description=haoxuan web zacp gateway (8681)
 After=haoxuan-web-ovis.service
 Requires=haoxuan-web-ovis.service
 
