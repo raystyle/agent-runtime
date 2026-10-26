@@ -1,4 +1,4 @@
-# docs/recipe.md -- haoxun-v3 底坯镜像完整配方与坑
+# docs/recipe.md -- haoxuan-v3 底坯镜像完整配方与坑
 
 > 权威源:本仓 `versions.env`(钉子)+ `rootfs/`(静态 overlay)。
 > 本文档是人读面:为什么这么配、坑在哪、怎么排障。
@@ -38,7 +38,7 @@
 
 ## 5. 与编排器的接口:haoxun 父仓
 
-- 消费面:`gateway-zacp/backend/internal/orchestrator/incus.go` `imageFor()`--别名直透,config `[orchestrator] image/app_image/agent_images` 可覆盖,默认常数 `haoxun-v3` / `haoxun-v3-app`。**换镜像=改别名,零代码。**
+- 消费面:`gateway-zacp/backend/internal/orchestrator/incus.go` `imageFor()`--别名直透,config `[orchestrator] image/app_image/agent_images` 可覆盖,默认常数 `haoxuan-v3` / `haoxuan-v3-app`。**换镜像=改别名,零代码。**
 - launch 形态:project `haoxuan`、limits 3GiB/3cpu、acp proxy device(宿主 127.0.0.1:17xxx→容器 7663)。
 - 冷建序(ensure* 系)会兜底装编排器自愈件--本镜像已根修烤入,自愈自动 no-op(「只多不少」原则)。
 
@@ -46,4 +46,4 @@
 
 - herdr 与 devswha/herdr-web-ui 插件未烤入(编排器 ensureHerdr/ensureHerdrWebUI launch 时置备,镜像烤入后自动 no-op)。
 - pi 二进制与 `/opt/node/.../@agentclientprotocol/*-acp` npm 适配器未烤入(p4 发现#3)。
-- `haoxun-v3-app` 轻变体(app 二型,无桌面栈)尚未出版。
+- `haoxuan-v3-app` 轻变体(app 二型,无桌面栈)尚未出版。

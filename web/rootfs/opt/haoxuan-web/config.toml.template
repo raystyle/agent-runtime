@@ -1,4 +1,4 @@
-# haoxun-web 容器网关 config 模板(provision 首启拷入 /var/lib/haoxu*n/config.toml)
+# haoxuan-web 容器网关 config 模板(provision 首启拷入 /var/lib/haoxu*n/config.toml)
 # token 类绝不入模板;REPLACE_* 占位由 provision 首启注入真实值(kimi K-2 批)。
 # [[agents]] 五家模板(kimi K-1 批):instance_agent.go 需按 agentType 取模板,
 # 缺则 chat 面 agent template not configured。

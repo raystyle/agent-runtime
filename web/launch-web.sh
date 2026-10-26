@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# launch-web.sh —— haoxun-web 容器宿主侧 launch+接线(幂等;reattach 子命令)
+# launch-web.sh —— haoxuan-web 容器宿主侧 launch+接线(幂等;reattach 子命令)
 #
 # 接线四件:
 #   raw.lxc lxc.namespace.share.net=1  共享宿主 netns(127.0.0.1:17xxx/18xxx/7318/8681 直达,网关零改动)
@@ -13,7 +13,7 @@ cd "$(dirname "$0")/.."
 source versions.env
 source scripts/lib.sh
 
-NAME="haoxun-web"; VOL="haoxun-web-data"
+NAME="haoxuan-web"; VOL="haoxuan-web-data"
 IMPORT=""
 
 if [ "${1:-}" = "reattach" ]; then
@@ -39,7 +39,7 @@ else
   sudo incus config device add "$NAME" eth0 none >/dev/null 2>&1 || true
   sudo incus config set "$NAME" security.privileged=true
   sudo incus config set "$NAME" raw.lxc 'lxc.namespace.share.net=1'
-  sudo incus config device add "$NAME" data disk pool=zfspool source="$VOL" path=/var/lib/haoxun-web >/dev/null
+  sudo incus config device add "$NAME" data disk pool=zfspool source="$VOL" path=/var/lib/haoxuan-web >/dev/null
   sudo incus config device add "$NAME" runhaoxuan disk source=/run/haoxuan path=/mnt/haoxuan-run >/dev/null
   sudo incus config device add "$NAME" incussock disk \
     source=/var/lib/incus/unix.socket path=/var/lib/incus/unix.socket >/dev/null
@@ -59,29 +59,29 @@ GU=$(sed -n 's/^model_gateway_url *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config
 GT=$(sed -n 's/^model_gateway_token *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
 AM=$(sed -n 's/.*ANTHROPIC_MODEL *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
 printf 'MODEL_GATEWAY_URL=%s\nMODEL_GATEWAY_TOKEN=%s\nANTHROPIC_MODEL=%s\n' "$GU" "$GT" "$AM" > "$G"
-sudo incus file push "$G" "$NAME/var/lib/haoxun-web/gateway.env" >/dev/null; rm -f "$G"
+sudo incus file push "$G" "$NAME/var/lib/haoxuan-web/gateway.env" >/dev/null; rm -f "$G"
 # 模型网关 env 推入(kimi K-2:provision 据此注入 config 占位符;宿主 ~/.zacp-v3 抽取)
 G=$(mktemp); chmod 600 "$G"
 GU=$(sed -n 's/^model_gateway_url *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
 GT=$(sed -n 's/^model_gateway_token *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
 AM=$(sed -n 's/.*ANTHROPIC_MODEL *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
 printf 'MODEL_GATEWAY_URL=%s\nMODEL_GATEWAY_TOKEN=%s\nANTHROPIC_MODEL=%s\n' "$GU" "$GT" "$AM" > "$G"
-sudo incus file push "$G" "$NAME/var/lib/haoxun-web/gateway.env" >/dev/null; rm -f "$G"
+sudo incus file push "$G" "$NAME/var/lib/haoxuan-web/gateway.env" >/dev/null; rm -f "$G"
 sudo incus file push -r "$HOME/.config/incus" "$NAME/root/.config/incus" >/dev/null
 
 # 一次性状态迁移
 if [ -n "$IMPORT" ] && [ -d "$IMPORT" ]; then
   log "迁入 Ovis 状态: $IMPORT"
-  sudo incus exec "$NAME" -- mkdir -p /var/lib/haoxun-web/import
-  sudo incus file push -r "$IMPORT" "$NAME/var/lib/haoxun-web/import/herdr-web-ui" >/dev/null
-  sudo incus exec "$NAME" -- rm -f /var/lib/haoxun-web/.provisioned
+  sudo incus exec "$NAME" -- mkdir -p /var/lib/haoxuan-web/import
+  sudo incus file push -r "$IMPORT" "$NAME/var/lib/haoxuan-web/import/herdr-web-ui" >/dev/null
+  sudo incus exec "$NAME" -- rm -f /var/lib/haoxuan-web/.provisioned
   sudo incus restart "$NAME" >/dev/null
 fi
 
 log "验:三进程"
 sleep 8
 sudo incus exec "$NAME" -- bash -ec '
-systemctl is-active haoxun-web-provision haoxun-web-herdr haoxun-web-ovis haoxun-web-zacp
+systemctl is-active haoxuan-web-provision haoxuan-web-herdr haoxuan-web-ovis haoxuan-web-zacp
 [ -S /root/.config/herdr/herdr.sock ] && echo "✓ herdr.sock"
 curl -s -o /dev/null -w "7318: %{http_code}\n" http://127.0.0.1:7318/api/health
 curl -s -o /dev/null -w "8681: %{http_code}\n" http://127.0.0.1:8681/api/v1/agents'

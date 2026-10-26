@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# build-web-image.sh —— haoxun-web 容器镜像构建出版(web/ 配方唯一构建入口)
+# build-web-image.sh —— haoxuan-web 容器镜像构建出版(web/ 配方唯一构建入口)
 #
 # web 容器 = 宿主伴生应用容器:haoxun web 全家自包含——
 #   容器自己的 herdr(HOME 隔离,绝不碰宿主 ~/.config/herdr)+
@@ -98,17 +98,17 @@ rm -rf .git node_modules/src 2>/dev/null || true"
 
 # ── 6. rootfs overlay(unit 四件 + provision)────────────────
 log "rootfs overlay"
-for u in haoxun-web-provision haoxun-web-herdr haoxun-web-ovis haoxun-web-zacp; do
+for u in haoxuan-web-provision haoxuan-web-herdr haoxuan-web-ovis haoxuan-web-zacp; do
   sudo incus file push "web/rootfs/etc/systemd/system/$u.service" \
     "$BUILD_CTR/etc/systemd/system/$u.service" --mode=0644 >/dev/null
 done
-sudo incus file push web/rootfs/usr/local/bin/haoxun-web-provision \
-  "$BUILD_CTR/usr/local/bin/haoxun-web-provision" --mode=0755 >/dev/null
-sudo incus file push web/rootfs/opt/haoxun-web/config.toml.template \
-  "$BUILD_CTR/opt/haoxun-web/config.toml.template" --mode=0644 >/dev/null || \
-  incus_run "$BUILD_CTR" mkdir -p /opt/haoxun-web && \
-  sudo incus file push web/rootfs/opt/haoxun-web/config.toml.template \
-    "$BUILD_CTR/opt/haoxun-web/config.toml.template" --mode=0644 >/dev/null
+sudo incus file push web/rootfs/usr/local/bin/haoxuan-web-provision \
+  "$BUILD_CTR/usr/local/bin/haoxuan-web-provision" --mode=0755 >/dev/null
+sudo incus file push web/rootfs/opt/haoxuan-web/config.toml.template \
+  "$BUILD_CTR/opt/haoxuan-web/config.toml.template" --mode=0644 >/dev/null || \
+  incus_run "$BUILD_CTR" mkdir -p /opt/haoxuan-web && \
+  sudo incus file push web/rootfs/opt/haoxuan-web/config.toml.template \
+    "$BUILD_CTR/opt/haoxuan-web/config.toml.template" --mode=0644 >/dev/null
 
 # ── 7. mask 网络(共享宿主 netns 的守卫)──────────────────────
 log "mask networkd/udevd(共享 netns 守卫)"
@@ -119,7 +119,7 @@ incus_run "$BUILD_CTR" systemctl mask systemd-networkd.service \
 # ── 8. 启用 unit + 版本断言 ───────────────────────────────────
 log "enable units + 断言"
 incus_run "$BUILD_CTR" systemctl daemon-reload
-incus_run "$BUILD_CTR" systemctl enable haoxun-web-provision haoxun-web-herdr haoxun-web-ovis haoxun-web-zacp >/dev/null 2>&1
+incus_run "$BUILD_CTR" systemctl enable haoxuan-web-provision haoxuan-web-herdr haoxuan-web-ovis haoxuan-web-zacp >/dev/null 2>&1
 incus_run "$BUILD_CTR" bash -ec "
 herdr --version >/dev/null && echo '✓ herdr'
 zacp --version 2>/dev/null || zacp --help >/dev/null 2>&1 && echo '✓ zacp'
@@ -138,6 +138,6 @@ log "publish → $OPT_ALIAS"
 sudo incus stop "$BUILD_CTR" >/dev/null
 if [ "$SKIP_PUBLISH" -eq 1 ]; then log "--skip-publish:毕"; exit 0; fi
 sudo incus publish "$BUILD_CTR" --alias "$OPT_ALIAS" \
-  description="haoxun-web rebuild $(date +%Y%m%d) by agent-runtime" >/dev/null
+  description="haoxuan-web rebuild $(date +%Y%m%d) by agent-runtime" >/dev/null
 sudo incus image info "$OPT_ALIAS" | head -3
 log "毕:web 镜像别名 $OPT_ALIAS(launch 走 web/launch-web.sh)"

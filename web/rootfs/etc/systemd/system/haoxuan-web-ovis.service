@@ -1,8 +1,8 @@
 # Ovis 总控 7318(raystyle/herdr-web-ui 烤入 checkout;token 经插件 env)
 [Unit]
 Description=haoxun web Ovis control ui (7318)
-After=haoxun-web-herdr.service
-Requires=haoxun-web-herdr.service
+After=haoxuan-web-herdr.service
+Requires=haoxuan-web-herdr.service
 
 [Service]
 EnvironmentFile=/root/.config/herdr/plugins/config/devswha.herdr-web-ui/env

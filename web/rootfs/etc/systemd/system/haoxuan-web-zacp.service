@@ -1,11 +1,11 @@
 # zacp 网关 8681(ZACP_DATA=状态卷;incus CLI 经 bind-mount socket)
 [Unit]
 Description=haoxun web zacp gateway (8681)
-After=haoxun-web-ovis.service
-Requires=haoxun-web-ovis.service
+After=haoxuan-web-ovis.service
+Requires=haoxuan-web-ovis.service
 
 [Service]
-Environment=ZACP_DATA=/var/lib/haoxun-web
+Environment=ZACP_DATA=/var/lib/haoxuan-web
 Environment=INCUS_SOCKET=/var/lib/incus/unix.socket
 ExecStartPre=/bin/sh -c 'for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:7318/api/health && break; sleep 1; done; exit 0'
 ExecStart=/usr/local/bin/zacp

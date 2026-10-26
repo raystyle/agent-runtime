@@ -1,18 +1,18 @@
-# agent-runtime -- haoxun 系统容器底坯镜像配方仓
+# agent-runtime -- haoxuan 系统容器底坯镜像配方仓
 
 本仓是 haoxun 舰队「系统容器基础配置部署环境」的单一权威源:底坯镜像
-`haoxun-v3`(别名 hx-agent-base / hx-agent-base-v1-bookworm,现役指纹
+`haoxuan-v3`(别名 hx-agent-base / hx-agent-base-v1-bookworm,现役指纹
 16b35bf1669c)的构建配方、发布闸与再出版 SOP。以 git submodule 形态嵌套
 维护于 haoxun 父仓(raystyle/haoxuan)顶层 `agent-runtime/`;**Go ACP 网关
 在父仓 gateway-zacp/,不属本仓**。
 
 ## 快速开始
 
-    ./build-image.sh   --alias haoxun-v3-verify   # 构建出版到测试别名(现役别名硬闸保护)
-    ./verify-image.sh  --alias haoxun-v3-verify   # 发布闸六道:launch 同形/四 unit/health 阶梯/VNC 101/凭证/基线 diff
+    ./build-image.sh   --alias haoxuan-v3-verify   # 构建出版到测试别名(现役别名硬闸保护)
+    ./verify-image.sh  --alias haoxuan-v3-verify   # 发布闸六道:launch 同形/四 unit/health 阶梯/VNC 101/凭证/基线 diff
     # 全绿后晋升(人工三步,见 gateway-zacp/docs/runbook-v3.md §2.1):
-    FP=$(incus image info haoxun-v3-verify | awk '/^Fingerprint/{print $2}')
-    for a in haoxun-v3 hx-agent-base hx-agent-base-v1-bookworm; do
+    FP=$(incus image info haoxuan-v3-verify | awk '/^Fingerprint/{print $2}')
+    for a in haoxuan-v3 hx-agent-base hx-agent-base-v1-bookworm; do
       incus image alias delete $a && incus image alias create $a $FP
     done
 

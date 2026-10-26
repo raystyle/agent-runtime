@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
-# haoxun-web-provision —— web 容器首启一次性置备(oneshot unit)
+# haoxuan-web-provision —— web 容器首启一次性置备(oneshot unit)
 # 红线:容器自己的 herdr(HOME 隔离),绝不触宿主 ~/.config/herdr。
 set -Eeuo pipefail
-DATA=/var/lib/haoxun-web
+DATA=/var/lib/haoxuan-web
 H=/root
 
 mkdir -p "$DATA/state/herdr" "$DATA/state/herdr-web-ui" "$DATA/log"
 mkdir -p "$H/.config"
 rm -rf "$H/.config/herdr"
 # [v3] /run 是容器私有 tmpfs,incus disk bind 会被遮蔽——设备挂 /mnt/haoxuan-run,
-# 此处以软链透传:容器内 /run/haoxuan 为正名,两个历史误名同径兼容
-# (编排器 HerdrSocketPath 已正名 haoxuan;兼容链保旧部署过渡)
+# 此处以软链透传 /run/haoxuan(彻底正名批:旧误名兼容链退役)
 if [ -d /mnt/haoxuan-run ]; then
   ln -sfn /mnt/haoxuan-run /run/haoxuan
-  ln -sfn /mnt/haoxuan-run /run/haoxun
-  ln -sfn /mnt/haoxuan-run /run/haoxue
 fi
 ln -sfn "$DATA/state/herdr"         "$H/.config/herdr"
 rm -rf "$H/.config/herdr-web-ui"
@@ -49,7 +46,7 @@ if [ ! -f "$DATA/config.toml" ]; then
   fi
   . "$DATA/gateway.env"   # MODEL_GATEWAY_URL / MODEL_GATEWAY_TOKEN / ANTHROPIC_MODEL
   umask 077
-  sed -e "s|REPLACE_MODEL_GATEWAY_URL|$MODEL_GATEWAY_URL|"       -e "s|REPLACE_MODEL_GATEWAY_TOKEN|$MODEL_GATEWAY_TOKEN|"       -e "s|REPLACE_ANTHROPIC_MODEL|$ANTHROPIC_MODEL|"       /opt/haoxun-web/config.toml.template > "$DATA/config.toml"
+  sed -e "s|REPLACE_MODEL_GATEWAY_URL|$MODEL_GATEWAY_URL|"       -e "s|REPLACE_MODEL_GATEWAY_TOKEN|$MODEL_GATEWAY_TOKEN|"       -e "s|REPLACE_ANTHROPIC_MODEL|$ANTHROPIC_MODEL|"       /opt/haoxuan-web/config.toml.template > "$DATA/config.toml"
 fi
 
 touch "$DATA/.provisioned"

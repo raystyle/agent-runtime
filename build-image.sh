@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# build-image.sh —— haoxun-v3 系统容器底坯镜像构建出版(唯一构建入口)
+# build-image.sh —— haoxuan-v3 系统容器底坯镜像构建出版(唯一构建入口)
 #
 # 流水:preflight → init 容器 → apt 层 → rootfs overlay → 桌面栈启用 →
 #       九件套(逐件版本断言)→ manifest → scrub(凭证不烤镜像)→ publish 测试别名
@@ -7,7 +7,7 @@
 #
 # 用法:./build-image.sh [--alias <名>] [--from <底坯>] [--apt-mirror <源>]
 #                       [--staging <dir>] [--skip-publish] [--keep-on-fail] [-h]
-# 默认别名 haoxun-v3-verify(保护名单内的现役别名一律硬闸拒)。
+# 默认别名 haoxuan-v3-verify(保护名单内的现役别名一律硬闸拒)。
 set -Eeuo pipefail
 cd "$(dirname "$0")"
 source versions.env

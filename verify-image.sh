@@ -13,7 +13,7 @@ cd "$(dirname "$0")"
 source versions.env
 source scripts/lib.sh
 
-ALIAS="$ALIAS_VERIFY_DEFAULT"; BASELINE="haoxun-v3"; PORT=17699
+ALIAS="$ALIAS_VERIFY_DEFAULT"; BASELINE="haoxuan-v3"; PORT=17699
 KEEP=0; SKIP_DIFF=0
 V_CTR="haoxuan-vfy-new-$$"; B_CTR="haoxuan-vfy-base-$$"
 declare -a RESULTS=()
