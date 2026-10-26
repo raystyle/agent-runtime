@@ -99,7 +99,7 @@ else
   collect() { # collect <容器> : 版本+清单+unit 集+包集
     vexec "$1" bash -ec '
 echo "--versions--"
-for b in acpsup browse claude grok codex uv; do printf "%s=" "$b"; /usr/local/bin/$b --version 2>&1 | head -1; done
+for b in acpsup browse claude grok codex uv pi; do printf "%s=" "$b"; /usr/local/bin/$b --version 2>&1 | head -1; done
 printf "node="; node --version; printf "npm="; npm --version; printf "python3="; python3 --version 2>&1
 echo "--bins--"; ls -1 /usr/local/bin | sort
 echo "--opt--"; ls -1 /opt | sort
@@ -111,15 +111,22 @@ echo "--pkgs--"; dpkg -l 2>/dev/null | grep "^ii" | awk "{print \$2}" | sort' > 
   ver_new=$(sed -n '/--versions--/,/--bins--/p' "$NEW_F" | grep -v '^--')
   ver_base=$(sed -n '/--versions--/,/--bins--/p' "$BASE_F" | grep -v '^--')
   g=0
-  if [ "$ver_new" != "$ver_base" ]; then
-    g=1; log "  九件版本 diff:"; diff <(echo "$ver_base") <(echo "$ver_new") || true
+  # 版本面:基线无此件(新入件,如 pi)不进硬比对;双方都有才逐行比
+  ver_new_core=$(grep -vE '^(pi)=' <<<"$ver_new"); ver_base_core=$(grep -vE '^(pi)=' <<<"$ver_base")
+  if [ "$ver_new_core" != "$ver_base_core" ]; then
+    g=1; log "  九件版本 diff:"; diff <(echo "$ver_base_core") <(echo "$ver_new_core") || true
   fi
   bins_new=$(sed -n '/--bins--/,/--opt--/p' "$NEW_F" | grep -v '^--')
   bins_base=$(sed -n '/--bins--/,/--opt--/p' "$BASE_F" | grep -v '^--')
+  # 新入件白名单(本批意图性新增,清单化防夹带):pi 官方发行
+  EXPECT_NEW="pi"
   new_only=$(comm -23 <(sort -u <<<"$bins_new") <(sort -u <<<"$bins_base") | tr '\n' ' ')
+  unexpected=""
+  for b in $new_only; do echo " $EXPECT_NEW " | grep -q " $b " || unexpected="$unexpected$b "; done
+  [ -n "$unexpected" ] && { g=1; log "  预期外新增(白名单外):$unexpected"; }
   missing=$(comm -13 <(sort -u <<<"$bins_new") <(sort -u <<<"$bins_base") | tr '\n' ' ')
   [ -n "$missing" ] && { g=1; log "  基线有而新镜像缺:$missing"; }
-  gate "6 基线 diff" $g "新增(允许):${new_only:-无};缺失:${missing:-无}"
+  gate "6 基线 diff" $g "新增(白名单):${new_only:-无};缺失:${missing:-无}"
 fi
 
 # ── 报告 ──────────────────────────────────────────────────────

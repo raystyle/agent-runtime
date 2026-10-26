@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# haoxun-web-provision —— web 容器首启一次性置备(oneshot unit)
+# 红线:容器自己的 herdr(HOME 隔离),绝不触宿主 ~/.config/herdr。
+set -Eeuo pipefail
+DATA=/var/lib/haoxun-web
+H=/root
+
+mkdir -p "$DATA/state/herdr" "$DATA/state/herdr-web-ui" "$DATA/log"
+ln -sfn "$DATA/state/herdr"         "$H/.config/herdr"
+ln -sfn "$DATA/state/herdr-web-ui"  "$H/.config/herdr-web-ui"
+
+# 一次性迁移(宿主归档的 Ovis 状态,launch-web.sh --import-state 放入)
+if [ -d "$DATA/import/herdr-web-ui" ]; then
+  cp -a "$DATA/import/herdr-web-ui/." "$DATA/state/herdr-web-ui/"
+  rm -rf "$DATA/import"
+fi
+
+# token 生成与双写(control_web.env ↔ 插件 env;存在即用,幂等)
+if [ ! -s "$DATA/control_web.env" ]; then
+  umask 077
+  printf 'HERDR_WEB_TOKEN=%s\n' "$(head -c32 /dev/urandom | base64 | tr -d '=+/' | head -c43)" \
+    > "$DATA/control_web.env"
+fi
+TOK=$(sed -n 's/^HERDR_WEB_TOKEN=//p' "$DATA/control_web.env")
+P="$DATA/state/herdr/plugins/config/devswha.herdr-web-ui"
+mkdir -p "$P"
+printf 'PORT=7318\nHERDR_WEB_TOKEN=%s\nHERDR_WEB_HERDR_BIN=/usr/local/bin/herdr\nHERDR_WEB_FLEET_ONLY=socket\n' "$TOK" > "$P/env"
+chmod 600 "$P/env"
+
+# Ovis 烤入 checkout 以本地插件挂进容器 herdr(免网络免认证)
+herdr plugin link /opt/herdr-web-ui >/dev/null 2>&1 || true
+
+# 网关 config 模板落位(存在即用)
+[ -f "$DATA/config.toml" ] || cp /opt/haoxun-web/config.toml.template "$DATA/config.toml"
+
+touch "$DATA/.provisioned"
+echo "provisioned: $(date -Is)"

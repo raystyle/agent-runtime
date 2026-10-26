@@ -1,0 +1,22 @@
+# haoxun-web 容器网关 config 模板(provision 首启拷入 /var/lib/haoxun/config.toml)
+# token 类绝不入模板;model_gateway 系按宿主 ~/.zacp-v3/config.toml 抄形。
+[server]
+addr = "0.0.0.0:8681"
+mode = "release"
+
+[session]
+default_cwd = "."
+auto_approve = false
+idle_timeout = "30m"
+
+[database]
+path = "data/zacp.db"
+
+[auth]
+# 生产形开认证;本地开发可注释本段免登录
+
+[orchestrator]
+allow_desktop_missing = false
+model_gateway_url = "http://192.168.88.12:8317"
+model_gateway_token = "REPLACE_AT_PROVISION"
+model_gateway_env = { ANTHROPIC_MODEL = "REPLACE_AT_PROVISION" }

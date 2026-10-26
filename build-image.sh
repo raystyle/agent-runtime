@@ -97,6 +97,14 @@ unzip -q /tmp/chrome.zip -d /opt/clean-chrome/
 ln -sfn chromium-$V_CHROME-x86_64-unknown-linux-gnu /opt/clean-chrome/CURRENT
 rm /tmp/chrome.zip"
 
+log "十件套:官方 pi(earendil-works/pi $V_PI;插件链不载入)"
+sudo incus file push "$STAGING/pi.tar.gz" "$BUILD_CTR/tmp/pi.tar.gz" >/dev/null
+incus_run "$BUILD_CTR" bash -ec "
+tar xzf /tmp/pi.tar.gz -C /opt/ && mv /opt/pi /opt/pi-$V_PI
+ln -sfn /opt/pi-$V_PI/pi /usr/local/bin/pi
+chmod 0755 /usr/local/bin/pi /opt/pi-$V_PI/pi
+rm /tmp/pi.tar.gz"
+
 log "九件套:node/npm(NodeSource node_22.x,精确钉版 $V_NODE)"
 incus_run "$BUILD_CTR" bash -ec "
 curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/ns.sh
@@ -115,6 +123,7 @@ chk claude '$V_CLAUDE (Claude Code)'
 chk grok 'grok $V_GROK (c58f321264ba)'
 chk codex 'codex-cli $V_CODEX'
 chk uv 'uv $V_UV (x86_64-unknown-linux-gnu)'
+chk pi '$V_PI'
 chk node 'v$V_NODE'
 chk npm '$V_NPM'
 python3 -c 'import sys; assert \"$V_PYTHON\" in sys.version' || { echo '  ✗ python3'; fail=1; }

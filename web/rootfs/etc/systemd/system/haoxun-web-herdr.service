@@ -1,0 +1,14 @@
+# 容器自己的 herdr server(HOME=/root → /var/lib/haoxun 状态卷;绝不触宿主)
+[Unit]
+Description=haoxun web in-container herdr server
+After=haoxun-web-provision.service
+Requires=haoxun-web-provision.service
+
+[Service]
+Environment=HOME=/root
+ExecStart=/usr/local/bin/herdr server
+ExecStartPost=/bin/sh -c 'for i in $(seq 1 30); do [ -S /root/.config/herdr/herdr.sock ] && exit 0; sleep 1; done; exit 1'
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+# haoxun-web 首启一次性置备(容器自己的 herdr HOME/Ovis 状态/token)
+[Unit]
+Description=haoxun web first-boot provision
+ConditionPathExists=!/var/lib/haoxun-web/.provisioned
+Before=haoxun-web-herdr.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/haoxun-web-provision
