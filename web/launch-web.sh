@@ -3,7 +3,7 @@
 #
 # 接线四件:
 #   raw.lxc lxc.namespace.share.net=1  共享宿主 netns(127.0.0.1:17xxx/18xxx/7318/8681 直达,网关零改动)
-#   disk /run/haoxun                  实例 herdr socket 拨号(读写)
+#   disk /run/haoxuan                  实例 herdr socket 拨号(读写)
 #   disk /var/lib/incus/unix.socket   编排道(同路径 bind,incus CLI 默认 socket 即对)
 #   disk ~/.config/incus              B1 受限证书(launch 后推,凭证不烤镜像)
 #
@@ -40,7 +40,7 @@ else
   sudo incus config set "$NAME" security.privileged=true
   sudo incus config set "$NAME" raw.lxc 'lxc.namespace.share.net=1'
   sudo incus config device add "$NAME" data disk pool=zfspool source="$VOL" path=/var/lib/haoxun-web >/dev/null
-  sudo incus config device add "$NAME" runhaoxun disk source=/run/haoxue path=/mnt/haoxue-run >/dev/null
+  sudo incus config device add "$NAME" runhaoxuan disk source=/run/haoxuan path=/mnt/haoxuan-run >/dev/null
   sudo incus config device add "$NAME" incussock disk \
     source=/var/lib/incus/unix.socket path=/var/lib/incus/unix.socket >/dev/null
 fi
