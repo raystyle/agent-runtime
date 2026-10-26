@@ -53,6 +53,20 @@ for i in $(seq 1 60); do
 done
 
 # B1 受限证书推入(每次幂等推,保 incusd 证书轮换后不失)
+# 模型网关 env 推入(kimi K-2:provision 据此注入 config 占位符;宿主 ~/.zacp-v3 抽取)
+G=$(mktemp); chmod 600 "$G"
+GU=$(sed -n 's/^model_gateway_url *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
+GT=$(sed -n 's/^model_gateway_token *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
+AM=$(sed -n 's/.*ANTHROPIC_MODEL *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
+printf 'MODEL_GATEWAY_URL=%s\nMODEL_GATEWAY_TOKEN=%s\nANTHROPIC_MODEL=%s\n' "$GU" "$GT" "$AM" > "$G"
+sudo incus file push "$G" "$NAME/var/lib/haoxun-web/gateway.env" >/dev/null; rm -f "$G"
+# 模型网关 env 推入(kimi K-2:provision 据此注入 config 占位符;宿主 ~/.zacp-v3 抽取)
+G=$(mktemp); chmod 600 "$G"
+GU=$(sed -n 's/^model_gateway_url *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
+GT=$(sed -n 's/^model_gateway_token *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
+AM=$(sed -n 's/.*ANTHROPIC_MODEL *= *"\([^"]*\)".*/\1/p' "$HOME/.zacp-v3/config.toml" | head -1)
+printf 'MODEL_GATEWAY_URL=%s\nMODEL_GATEWAY_TOKEN=%s\nANTHROPIC_MODEL=%s\n' "$GU" "$GT" "$AM" > "$G"
+sudo incus file push "$G" "$NAME/var/lib/haoxun-web/gateway.env" >/dev/null; rm -f "$G"
 sudo incus file push -r "$HOME/.config/incus" "$NAME/root/.config/incus" >/dev/null
 
 # 一次性状态迁移

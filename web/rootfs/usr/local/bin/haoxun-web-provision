@@ -6,6 +6,7 @@ DATA=/var/lib/haoxun-web
 H=/root
 
 mkdir -p "$DATA/state/herdr" "$DATA/state/herdr-web-ui" "$DATA/log"
+mkdir -p "$H/.config"
 rm -rf "$H/.config/herdr"
 # [v3] /run 是容器私有 tmpfs,incus disk bind 会被遮蔽——设备挂 /mnt/haoxuan-run,
 # 此处以软链透传,保住编排器/桥的 /run/haoxuan 硬编码路径(零代码改动原则)
@@ -37,8 +38,16 @@ chmod 600 "$P/env"
 # Ovis 烤入 checkout 以本地插件挂进容器 herdr(免网络免认证)
 herdr plugin link /opt/herdr-web-ui >/dev/null 2>&1 || true
 
-# 网关 config 模板落位(存在即用)
-[ -f "$DATA/config.toml" ] || cp /opt/haoxun-web/config.toml.template "$DATA/config.toml"
+# 网关 config 模板落位(存在即用)+ 占位符注入(kimi K-2:REPLACE_* 必须真实换,
+# 否则伪 token 原样进实例环境;来源=launch-web.sh 推入的 gateway.env,缺则拒起)
+if [ ! -f "$DATA/config.toml" ]; then
+  if [ ! -s "$DATA/gateway.env" ]; then
+    echo "gateway.env missing (model gateway URL/TOKEN/MODEL); refusing fake config" >&2; exit 1
+  fi
+  . "$DATA/gateway.env"   # MODEL_GATEWAY_URL / MODEL_GATEWAY_TOKEN / ANTHROPIC_MODEL
+  umask 077
+  sed -e "s|REPLACE_MODEL_GATEWAY_URL|$MODEL_GATEWAY_URL|"       -e "s|REPLACE_MODEL_GATEWAY_TOKEN|$MODEL_GATEWAY_TOKEN|"       -e "s|REPLACE_ANTHROPIC_MODEL|$ANTHROPIC_MODEL|"       /opt/haoxun-web/config.toml.template > "$DATA/config.toml"
+fi
 
 touch "$DATA/.provisioned"
 echo "provisioned: $(date -Is)"

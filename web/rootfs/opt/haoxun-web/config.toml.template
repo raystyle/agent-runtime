@@ -1,5 +1,7 @@
-# haoxun-web 容器网关 config 模板(provision 首启拷入 /var/lib/haoxun/config.toml)
-# token 类绝不入模板;model_gateway 系按宿主 ~/.zacp-v3/config.toml 抄形。
+# haoxun-web 容器网关 config 模板(provision 首启拷入 /var/lib/haoxu*n/config.toml)
+# token 类绝不入模板;REPLACE_* 占位由 provision 首启注入真实值(kimi K-2 批)。
+# [[agents]] 五家模板(kimi K-1 批):instance_agent.go 需按 agentType 取模板,
+# 缺则 chat 面 agent template not configured。
 [server]
 addr = "0.0.0.0:8681"
 mode = "release"
@@ -15,8 +17,48 @@ path = "data/zacp.db"
 [auth]
 # 生产形开认证;本地开发可注释本段免登录
 
+[[agents]]
+id = "pi"
+name = "Pi"
+enabled = true
+transport = "stdio"
+command = "pi"
+args = ["--mode", "rpc"]
+
+[[agents]]
+id = "claude-code"
+name = "Claude Code"
+enabled = true
+transport = "stdio"
+command = "claude"
+args = []
+
+[[agents]]
+id = "codex"
+name = "Codex"
+enabled = true
+transport = "stdio"
+command = "codex"
+args = []
+
+[[agents]]
+id = "grok"
+name = "Grok"
+enabled = true
+transport = "stdio"
+command = "grok"
+args = []
+
+[[agents]]
+id = "kimi"
+name = "Kimi"
+enabled = true
+transport = "stdio"
+command = "kimi"
+args = []
+
 [orchestrator]
 allow_desktop_missing = false
-model_gateway_url = "http://192.168.88.12:8317"
-model_gateway_token = "REPLACE_AT_PROVISION"
-model_gateway_env = { ANTHROPIC_MODEL = "REPLACE_AT_PROVISION" }
+model_gateway_url = "REPLACE_MODEL_GATEWAY_URL"
+model_gateway_token = "REPLACE_MODEL_GATEWAY_TOKEN"
+model_gateway_env = { ANTHROPIC_MODEL = "REPLACE_ANTHROPIC_MODEL" }
