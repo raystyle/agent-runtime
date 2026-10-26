@@ -1,6 +1,6 @@
-# 容器自己的 herdr server(HOME=/root → /var/lib/haoxun 状态卷;绝不触宿主)
+# 容器自己的 herdr server(HOME=/root → /var/lib/haoxuann 状态卷;绝不触宿主)
 [Unit]
-Description=haoxun web in-container herdr server
+Description=haoxuann web in-container herdr server
 After=haoxuan-web-provision.service
 Requires=haoxuan-web-provision.service
 

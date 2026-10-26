@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # build-web-image.sh —— haoxuan-web 容器镜像构建出版(web/ 配方唯一构建入口)
 #
-# web 容器 = 宿主伴生应用容器:haoxun web 全家自包含——
+# web 容器 = 宿主伴生应用容器:haoxuann web 全家自包含——
 #   容器自己的 herdr(HOME 隔离,绝不碰宿主 ~/.config/herdr)+
 #   Ovis fork(raystyle/herdr-web-ui,烤入)+ zacp 网关(staging 二进制)。
 # launch 接线(launch-web.sh):共享宿主 netns + bind-mount incus socket,/run/haoxuan。
-# 红线:宿主系统 herdr 永不被 haoxun 碰(插件装宿主的教训:乱 spawn+抢 socket)。
+# 红线:宿主系统 herdr 永不被 haoxuann 碰(插件装宿主的教训:乱 spawn+抢 socket)。
 #
 # 用法:web/build-web-image.sh [--alias <名>] [--staging <dir>] [--skip-publish]
 #                                     [--keep-on-fail] [-h]
