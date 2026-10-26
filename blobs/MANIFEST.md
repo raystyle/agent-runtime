@@ -16,6 +16,7 @@
 | codex | 0.162.1 | `628e3548…0d92e1` | `/usr/local/bin/codex` | `~/.local/share/codex/bin/codex` |
 | clean-chrome zip | 155.0.8059.39 | `97c96584…23acd` | `/opt/clean-chrome/chromium-155…gnu/`(树) | `~/dev-chrome/dist-gen8-r4/chromium-155.0.8059.39-x86_64-unknown-linux-gnu.zip`(镜像目录名无 gen9-r2 后缀,与此 zip 对名) |
 | pi 官方发行 | 1.4.0 | `f2e4e432…15d2` | -- | `~/staging-hxr/pi-linux-x64.tar.gz`(上游 earendil-works/pi v1.4.0 release;gh release download 备源。pi-rs 插件线另窗,不入镜像) |
+| kimi CLI | 2.2.0 | `8ee7405d…11af` | -- | `~/.local/bin/kimi`(宿主单 ELF 191MB 预推;上游 npm @moonshot-ai/kimi-cli 官方安装道备源) |
 
 - clean-chrome 备源:`~/dist-gen9-r2/chromium-155.0.8059.39-gen9-r2-…zip`(更新但目录名异,晋升换版时须同步改 wrapper 无关、仅目录名)。
 - 三冗余原则:harvest 道(镜像)+ 宿主道(本机产件)+ 官方道(npm/releases)--前两道零 GitHub 依赖;官方道仅在现役镜像过期删除且宿主件丢失时兜底。

@@ -31,7 +31,8 @@ if [ "$CHECK_ONLY" -eq 0 ]; then
   [ -s "$OUT/chrome.zip" ] || cp "$SRC_CHROME_ZIP" "$OUT/chrome.zip"
   # 官方 pi(earendil-works/pi release tar.gz;sha 钉台账)
   [ -s "$OUT/pi.tar.gz" ] || cp "$SRC_PI" "$OUT/pi.tar.gz"
-  chmod 0755 "$OUT"/{acpsup,uv,uvx,browse,claude,grok,codex}
+  [ -s "$OUT/kimi" ] || cp "$SRC_KIMI" "$OUT/kimi"
+  chmod 0755 "$OUT"/{acpsup,uv,uvx,browse,claude,grok,codex,kimi}
 fi
 
 # 校验:逐件 sha256 = versions.env 台账
@@ -51,6 +52,7 @@ chk grok      "$SHA_GROK"
 chk codex     "$SHA_CODEX"
 chk chrome.zip "$SHA_CHROME_ZIP"
 chk pi.tar.gz "$SHA_PI"
+chk kimi "$SHA_KIMI"
 
 [ "$fail" -eq 0 ] || die "staging 校验未过(--check 形:先跑 scripts/stage.sh 组装)"
 log "staging ${CHECK_ONLY:+校验}就绪: $OUT"

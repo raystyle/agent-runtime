@@ -40,7 +40,7 @@ else
   sudo incus config set "$NAME" security.privileged=true
   sudo incus config set "$NAME" raw.lxc 'lxc.namespace.share.net=1'
   sudo incus config device add "$NAME" data disk pool=zfspool source="$VOL" path=/var/lib/haoxun-web >/dev/null
-  sudo incus config device add "$NAME" runhaoxun disk source=/run/haoxuan path=/run/haoxuan >/dev/null
+  sudo incus config device add "$NAME" runhaoxun disk source=/run/haoxuan path=/mnt/haoxuan-run >/dev/null
   sudo incus config device add "$NAME" incussock disk \
     source=/var/lib/incus/unix.socket path=/var/lib/incus/unix.socket >/dev/null
 fi

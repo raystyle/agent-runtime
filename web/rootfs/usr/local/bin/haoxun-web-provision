@@ -6,7 +6,14 @@ DATA=/var/lib/haoxun-web
 H=/root
 
 mkdir -p "$DATA/state/herdr" "$DATA/state/herdr-web-ui" "$DATA/log"
+rm -rf "$H/.config/herdr"
+# [v3] /run 是容器私有 tmpfs,incus disk bind 会被遮蔽——设备挂 /mnt/haoxuan-run,
+# 此处以软链透传,保住编排器/桥的 /run/haoxuan 硬编码路径(零代码改动原则)
+if [ -d /mnt/haoxuan-run ] && [ ! -L /run/haoxuan ]; then
+  rm -rf /run/haoxuan; ln -sfn /mnt/haoxuan-run /run/haoxuan
+fi
 ln -sfn "$DATA/state/herdr"         "$H/.config/herdr"
+rm -rf "$H/.config/herdr-web-ui"
 ln -sfn "$DATA/state/herdr-web-ui"  "$H/.config/herdr-web-ui"
 
 # 一次性迁移(宿主归档的 Ovis 状态,launch-web.sh --import-state 放入)

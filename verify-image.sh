@@ -119,7 +119,7 @@ echo "--pkgs--"; dpkg -l 2>/dev/null | grep "^ii" | awk "{print \$2}" | sort' > 
   bins_new=$(sed -n '/--bins--/,/--opt--/p' "$NEW_F" | grep -v '^--')
   bins_base=$(sed -n '/--bins--/,/--opt--/p' "$BASE_F" | grep -v '^--')
   # 新入件白名单(本批意图性新增,清单化防夹带):pi 官方发行
-  EXPECT_NEW="pi"
+  EXPECT_NEW="pi kimi"
   new_only=$(comm -23 <(sort -u <<<"$bins_new") <(sort -u <<<"$bins_base") | tr '\n' ' ')
   unexpected=""
   for b in $new_only; do echo " $EXPECT_NEW " | grep -q " $b " || unexpected="$unexpected$b "; done

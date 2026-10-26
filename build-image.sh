@@ -91,6 +91,7 @@ sudo incus file push "$STAGING/uvx"    "$BUILD_CTR/usr/local/bin/uvx"    --mode=
 sudo incus file push "$STAGING/claude" "$BUILD_CTR/usr/local/bin/claude" --mode=0755 >/dev/null
 sudo incus file push "$STAGING/grok"   "$BUILD_CTR/usr/local/bin/grok"   --mode=0755 >/dev/null
 sudo incus file push "$STAGING/codex"  "$BUILD_CTR/usr/local/bin/codex"  --mode=0755 >/dev/null
+sudo incus file push "$STAGING/kimi"   "$BUILD_CTR/usr/local/bin/kimi"   --mode=0755 >/dev/null
 sudo incus file push "$STAGING/chrome.zip" "$BUILD_CTR/tmp/chrome.zip" >/dev/null
 incus_run "$BUILD_CTR" bash -ec "
 unzip -q /tmp/chrome.zip -d /opt/clean-chrome/
@@ -124,6 +125,7 @@ chk grok 'grok $V_GROK (c58f321264ba)'
 chk codex 'codex-cli $V_CODEX'
 chk uv 'uv $V_UV (x86_64-unknown-linux-gnu)'
 chk pi '$V_PI'
+chk kimi '$V_KIMI'
 chk node 'v$V_NODE'
 chk npm '$V_NPM'
 python3 -c 'import sys; assert \"$V_PYTHON\" in sys.version' || { echo '  ✗ python3'; fail=1; }
