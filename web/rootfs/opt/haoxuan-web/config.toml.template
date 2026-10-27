@@ -22,8 +22,8 @@ id = "pi"
 name = "Pi"
 enabled = true
 transport = "stdio"
-command = "pi"
-args = ["--mode", "rpc"]
+command = "bun"
+args = ["/opt/haoxuan-web/bin/acpsup-bridge.mjs", "--agent", "pi"]
 env = ["ANTHROPIC_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "ANTHROPIC_AUTH_TOKEN=REPLACE_MODEL_GATEWAY_TOKEN", "OPENAI_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "OPENAI_API_KEY=REPLACE_MODEL_GATEWAY_TOKEN", "ANTHROPIC_MODEL=REPLACE_ANTHROPIC_MODEL"]
 
 [[agents]]
@@ -31,8 +31,8 @@ id = "claude-code"
 name = "Claude Code"
 enabled = true
 transport = "stdio"
-command = "claude"
-args = []
+command = "bun"
+args = ["/opt/haoxuan-web/bin/acpsup-bridge.mjs", "--agent", "claude"]
 env = ["ANTHROPIC_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "ANTHROPIC_AUTH_TOKEN=REPLACE_MODEL_GATEWAY_TOKEN", "OPENAI_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "OPENAI_API_KEY=REPLACE_MODEL_GATEWAY_TOKEN", "ANTHROPIC_MODEL=REPLACE_ANTHROPIC_MODEL"]
 
 [[agents]]
@@ -40,8 +40,8 @@ id = "codex"
 name = "Codex"
 enabled = true
 transport = "stdio"
-command = "codex"
-args = []
+command = "bun"
+args = ["/opt/haoxuan-web/bin/acpsup-bridge.mjs", "--agent", "codex"]
 env = ["ANTHROPIC_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "ANTHROPIC_AUTH_TOKEN=REPLACE_MODEL_GATEWAY_TOKEN", "OPENAI_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "OPENAI_API_KEY=REPLACE_MODEL_GATEWAY_TOKEN", "ANTHROPIC_MODEL=REPLACE_ANTHROPIC_MODEL"]
 
 [[agents]]
@@ -49,8 +49,8 @@ id = "grok"
 name = "Grok"
 enabled = true
 transport = "stdio"
-command = "grok"
-args = []
+command = "bun"
+args = ["/opt/haoxuan-web/bin/acpsup-bridge.mjs", "--agent", "grok"]
 env = ["ANTHROPIC_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "ANTHROPIC_AUTH_TOKEN=REPLACE_MODEL_GATEWAY_TOKEN", "OPENAI_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "OPENAI_API_KEY=REPLACE_MODEL_GATEWAY_TOKEN", "ANTHROPIC_MODEL=REPLACE_ANTHROPIC_MODEL"]
 
 [[agents]]
@@ -58,8 +58,8 @@ id = "kimi"
 name = "Kimi"
 enabled = true
 transport = "stdio"
-command = "kimi"
-args = []
+command = "bun"
+args = ["/opt/haoxuan-web/bin/acpsup-bridge.mjs", "--agent", "kimi"]
 env = ["ANTHROPIC_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "ANTHROPIC_AUTH_TOKEN=REPLACE_MODEL_GATEWAY_TOKEN", "OPENAI_BASE_URL=REPLACE_MODEL_GATEWAY_URL", "OPENAI_API_KEY=REPLACE_MODEL_GATEWAY_TOKEN", "ANTHROPIC_MODEL=REPLACE_ANTHROPIC_MODEL"]
 
 [orchestrator]
