@@ -126,7 +126,7 @@ sudo incus file push web/rootfs/opt/haoxuan-web/config.toml.template \
 # ACP 桥适配层+SDK(chat 面五家经它说 ACP;bun 跑 .mjs,零 node 依赖)
 sudo incus file push ../bin/acpsup-bridge.mjs "$BUILD_CTR/opt/haoxuan-web/bin/acpsup-bridge.mjs" --mode=0755 >/dev/null
 sudo incus file push -r ../node_modules/@agentclientprotocol "$BUILD_CTR/opt/haoxuan-web/node_modules/" >/dev/null
-
+sudo incus file push -r ../node_modules/zod "$BUILD_CTR/opt/haoxuan-web/node_modules/" >/dev/null
 # ── 7. mask 网络(共享宿主 netns 的守卫)──────────────────────
 log "mask networkd/udevd(共享 netns 守卫)"
 incus_run "$BUILD_CTR" systemctl mask systemd-networkd.service \
