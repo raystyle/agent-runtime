@@ -47,7 +47,7 @@ protect_alias_web() { # web 保护名单与实例名单分立
 }
 protect_alias_web "$OPT_ALIAS"
 incus image info "$WEB_BASE_IMAGE" >/dev/null 2>&1 || die "底坯 $WEB_BASE_IMAGE 不在库"
-for f in "$SRC_PI" "$SRC_ZACP" "$SRC_HERDR"; do
+for f in "$SRC_PI" "$SRC_ZACP" "$SRC_HERDR" "$SRC_CLAUDE" "$SRC_GROK" "$SRC_CODEX" "$SRC_KIMI"; do
   [ -s "$f" ] || die "staging 缺件: $f"
 done
 [ -s "$STAGING/pi-linux-x64.tar.gz" ] || cp "$SRC_PI" "$STAGING/pi-linux-x64.tar.gz"
@@ -55,6 +55,11 @@ done
 [ -s "$STAGING/herdr" ] || cp "$SRC_HERDR" "$STAGING/herdr"
 got=$(sha256sum "$STAGING/pi-linux-x64.tar.gz" | awk '{print $1}')
 [ "$got" = "$SHA_PI" ] || die "pi tar.gz sha 不符(得 $got)"
+# 五家 agent CLI(chat 面 stdio 直起; zacp LookPath 判 installed)
+for pair in "claude:$SRC_CLAUDE" "grok:$SRC_GROK" "codex:$SRC_CODEX" "kimi:$SRC_KIMI"; do
+  n=${pair%%:*}; s=${pair#*:}
+  [ -s "$STAGING/$n" ] || cp "$s" "$STAGING/$n"
+done
 
 # ── 2. init 构建容器 ──────────────────────────────────────────
 log "init:$WEB_BASE_IMAGE → $BUILD_CTR"
@@ -79,12 +84,22 @@ mv /root/.bun/bin/bun /usr/local/bin/bun && rm -rf /root/.bun
 /usr/local/bin/incus --version >/dev/null 2>&1 || true  # glibc 探针
 bun --version'
 
-# ── 4. 二进制 push(herdr/zacp/incus)─────────────────────────
+# ── 4. 二进制 push(herdr/zacp/incus + 五家 agent CLI)────────
 # incus CLI 烤宿主件(6.0.5 与宿主 daemon 同套,glibc 动态链 bookworm 2.36 可载)
-log "push herdr + zacp + incus"
+log "push herdr + zacp + incus + 五家 CLI"
 sudo incus file push "$STAGING/herdr" "$BUILD_CTR/usr/local/bin/herdr" --mode=0755 >/dev/null
 sudo incus file push "$STAGING/zacp"  "$BUILD_CTR/usr/local/bin/zacp"  --mode=0755 >/dev/null
 sudo incus file push /usr/bin/incus   "$BUILD_CTR/usr/local/bin/incus" --mode=0755 >/dev/null
+for n in claude grok codex kimi; do
+  sudo incus file push "$STAGING/$n" "$BUILD_CTR/usr/local/bin/$n" --mode=0755 >/dev/null
+done
+# 官方 pi:tar.gz 推入解包 /opt/pi 树 + 软链(与实例镜像同形)
+sudo incus file push "$STAGING/pi-linux-x64.tar.gz" "$BUILD_CTR/tmp/pi.tgz" >/dev/null
+incus_run "$BUILD_CTR" bash -ec '
+mkdir -p /opt/pi && tar -xzf /tmp/pi.tgz -C /opt/pi
+PIBIN=$(find /opt/pi -maxdepth 3 -type f -name pi | head -1)
+[ -n "$PIBIN" ] && ln -sfn "$PIBIN" /usr/local/bin/pi
+rm -f /tmp/pi.tgz'
 
 # ── 5. Ovis fork 烤入(钉 commit)─────────────────────────────
 log "Ovis 烤入: raystyle/herdr-web-ui@$WEB_V_OVIS"
@@ -124,7 +139,8 @@ incus_run "$BUILD_CTR" bash -ec "
 herdr --version >/dev/null && echo '✓ herdr'
 zacp --version 2>/dev/null || zacp --help >/dev/null 2>&1 && echo '✓ zacp'
 bun --version >/dev/null && echo '✓ bun'
-incus --version >/dev/null && echo '✓ incus'"
+incus --version >/dev/null && echo '✓ incus'
+for n in claude grok codex kimi pi; do command -v \$n >/dev/null && echo \"✓ \$n\"; done"
 
 # ── 9. scrub + publish ────────────────────────────────────────
 log "scrub"
