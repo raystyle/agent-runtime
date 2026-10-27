@@ -119,17 +119,13 @@ for u in haoxuan-web-provision haoxuan-web-herdr haoxuan-web-ovis haoxuan-web-za
 done
 sudo incus file push web/rootfs/usr/local/bin/haoxuan-web-provision \
   "$BUILD_CTR/usr/local/bin/haoxuan-web-provision" --mode=0755 >/dev/null
+# 目录先建后推,零回退分支(前批 || 回退链在此翻车:file does not exist)
+incus_run "$BUILD_CTR" mkdir -p /opt/haoxuan-web/bin /opt/haoxuan-web/node_modules
 sudo incus file push web/rootfs/opt/haoxuan-web/config.toml.template \
   "$BUILD_CTR/opt/haoxuan-web/config.toml.template" --mode=0644 >/dev/null
 # ACP 桥适配层+SDK(chat 面五家经它说 ACP;bun 跑 .mjs,零 node 依赖)
-sudo incus file push ../bin/acpsup-bridge.mjs "$BUILD_CTR/opt/haoxuan-web/bin/acpsup-bridge.mjs" --mode=0755 >/dev/null 2>&1 || {
-  sudo incus exec "$BUILD_CTR" -- mkdir -p /opt/haoxuan-web/bin
-  sudo incus file push ../bin/acpsup-bridge.mjs "$BUILD_CTR/opt/haoxuan-web/bin/acpsup-bridge.mjs" --mode=0755 >/dev/null
-}
-sudo incus file push -r ../node_modules/@agentclientprotocol "$BUILD_CTR/opt/haoxuan-web/node_modules/" >/dev/null || \
-  incus_run "$BUILD_CTR" mkdir -p /opt/haoxuan-web && \
-  sudo incus file push web/rootfs/opt/haoxuan-web/config.toml.template \
-    "$BUILD_CTR/opt/haoxuan-web/config.toml.template" --mode=0644 >/dev/null
+sudo incus file push ../bin/acpsup-bridge.mjs "$BUILD_CTR/opt/haoxuan-web/bin/acpsup-bridge.mjs" --mode=0755 >/dev/null
+sudo incus file push -r ../node_modules/@agentclientprotocol "$BUILD_CTR/opt/haoxuan-web/node_modules/" >/dev/null
 
 # ── 7. mask 网络(共享宿主 netns 的守卫)──────────────────────
 log "mask networkd/udevd(共享 netns 守卫)"
