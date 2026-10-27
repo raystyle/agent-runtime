@@ -114,6 +114,13 @@ bash /tmp/ns.sh >/dev/null 2>&1
 apt-get install -y -qq nodejs=$V_NODE-1nodesource1 >/dev/null && rm -f /tmp/ns.sh" \
   || die "NodeSource 道 fail(离线改 tarball 道:见 docs/recipe.md)"
 
+log "ACP 适配层:claude-agent-acp 装至 acpsup 期望前缀(/opt/node)"
+incus_run "$BUILD_CTR" bash -ec '
+mkdir -p /opt/node/lib /etc/systemd/system/acpsup.service.d
+ln -sfn /usr/lib/node_modules /opt/node/lib/node_modules
+npm install -g --prefix /opt/node @agentclientprotocol/claude-agent-acp >/dev/null 2>&1
+ls /opt/node/lib/node_modules/@agentclientprotocol/ >/dev/null'
+
 log "九件套版本断言"
 incus_run "$BUILD_CTR" bash -ec "
 fail=0
