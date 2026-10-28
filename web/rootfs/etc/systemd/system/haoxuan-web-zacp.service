@@ -9,7 +9,7 @@ Environment=ZACP_DATA=/var/lib/haoxuan-web
 Environment=INCUS_SOCKET=/var/lib/incus/unix.socket
 ExecStartPre=/bin/sh -c 'for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:7318/api/health && break; sleep 1; done; exit 0'
 ExecStart=/usr/local/bin/zacp
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
