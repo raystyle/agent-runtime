@@ -32,7 +32,7 @@ fi
 TOK=$(sed -n 's/^HERDR_WEB_TOKEN=//p' "$DATA/control_web.env")
 P="$DATA/state/herdr/plugins/config/devswha.herdr-web-ui"
 mkdir -p "$P"
-printf 'PORT=7318\nHERDR_WEB_TOKEN=%s\nHERDR_WEB_HERDR_BIN=/usr/local/bin/herdr\nHERDR_WEB_FLEET_ONLY=socket\n' "$TOK" > "$P/env"
+printf 'PORT=7318\nHERDR_WEB_TOKEN=%s\nHERDR_WEB_HERDR_BIN=/usr/local/bin/herdr\nHERDR_WEB_FLEET_ONLY=socket\nHERDR_WEB_CONSOLE=1\n' "$TOK" > "$P/env"
 chmod 600 "$P/env"
 
 # Ovis 烤入 checkout 以本地插件挂进容器 herdr(免网络免认证)
