@@ -101,15 +101,28 @@ PIBIN=$(find /opt/pi -maxdepth 3 -type f -name pi | head -1)
 [ -n "$PIBIN" ] && ln -sfn "$PIBIN" /usr/local/bin/pi
 rm -f /tmp/pi.tgz'
 
-# ── 5. Ovis fork 烤入(钉 commit)─────────────────────────────
-log "Ovis 烤入: raystyle/herdr-web-ui@$WEB_V_OVIS"
-incus_run "$BUILD_CTR" bash -ec "
-git clone -q https://github.com/raystyle/herdr-web-ui /opt/herdr-web-ui
-cd /opt/herdr-web-ui && git checkout -q $WEB_V_OVIS
-bun install --frozen-lockfile >/dev/null 2>&1
-bun run build >/dev/null 2>&1
-[ -f dist/index.html ] || [ -f dist/index.js ] || { echo 'ovis dist 缺'; exit 1; }
-rm -rf .git node_modules/src 2>/dev/null || true"
+# ── 5. Ovis fork 烤入(钉 commit;子仓优先)──────────────────
+# [集成批] herdr-web-ui 已 submodule 挂父仓:有工作树则拷入(免网络、
+# 与父仓指针一致);无则回退 clone(独立构建场景)。子仓道拷宿主已构建
+# 的 dist+源码树,bun install/build 步跳过(dist 已成品)。
+if [ -f ../herdr-web-ui/server/index.ts ]; then
+  log "Ovis 烤入: 子仓工作树(../herdr-web-ui)"
+  incus_run "$BUILD_CTR" mkdir -p /opt/herdr-web-ui
+  sudo incus file push -r ../herdr-web-ui/server "$BUILD_CTR/opt/herdr-web-ui/" >/dev/null
+  sudo incus file push -r ../herdr-web-ui/shared "$BUILD_CTR/opt/herdr-web-ui/" >/dev/null
+  sudo incus file push -r ../herdr-web-ui/dist "$BUILD_CTR/opt/herdr-web-ui/" >/dev/null
+  sudo incus file push ../herdr-web-ui/package.json "$BUILD_CTR/opt/herdr-web-ui/" >/dev/null
+  incus_run "$BUILD_CTR" bash -ec "[ -f /opt/herdr-web-ui/dist/index.html ] || { echo 'ovis dist 缺'; exit 1; }"
+else
+  log "Ovis 烤入: raystyle/herdr-web-ui@$WEB_V_OVIS(网络 clone)"
+  incus_run "$BUILD_CTR" bash -ec "
+  git clone -q https://github.com/raystyle/herdr-web-ui /opt/herdr-web-ui
+  cd /opt/herdr-web-ui && git checkout -q $WEB_V_OVIS
+  bun install --frozen-lockfile >/dev/null 2>&1
+  bun run build >/dev/null 2>&1
+  [ -f dist/index.html ] || [ -f dist/index.js ] || { echo 'ovis dist 缺'; exit 1; }
+  rm -rf .git node_modules/src 2>/dev/null || true"
+fi
 
 # ── 6. rootfs overlay(unit 四件 + provision)────────────────
 log "rootfs overlay"
